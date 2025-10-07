@@ -21,7 +21,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # 3. CycloneDDSの設定ファイルと環境変数を追加
-COPY ../docker/middleware_profiles/cyclonedds.xml /etc/cyclonedds.xml
+COPY docker/middleware_profiles/cyclonedds.xml /etc/cyclonedds.xml
 # 環境変数を設定
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 ENV CYCLONEDDS_URI=file:///etc/cyclonedds.xml
