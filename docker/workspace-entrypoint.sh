@@ -49,6 +49,4 @@ print_info "Custom network settings applied."
 export HOME=${USER_HOME}
 chown -R ${HOST_USER_UID}:${HOST_USER_GID} ${USER_HOME}
 
-export ROS_DOMAIN_ID=33
-
 exec gosu ${USER_NAME} "$@"
