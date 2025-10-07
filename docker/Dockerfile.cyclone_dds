@@ -7,8 +7,8 @@ USER root
 
 # 1. Autoware向け通信・マルチキャスト設定
 #    設定ファイルを直接コピーする
-COPY conf/multicast-lo.service /etc/systemd/system/multicast-lo.service
-COPY conf/10-cyclone-max.conf /etc/sysctl.d/10-cyclone-max.conf
+COPY dds_setting/multicast-lo.service /etc/systemd/system/multicast-lo.service
+COPY dds_setting/10-cyclone-max.conf /etc/sysctl.d/10-cyclone-max.conf
 
 # 2. aptパッケージのインストール
 RUN apt-get update && \
