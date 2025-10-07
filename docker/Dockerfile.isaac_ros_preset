@@ -23,6 +23,8 @@ RUN apt-get update && \
         ros-humble-gxf-isaac-tensorops \
         ros-humble-isaac-ros-image-proc \
         ros-humble-isaac-ros-nitros-compressed-image-type \
+        ros-humble-isaac-ros-tensor-rt \
+        ros-humble-isaac-ros-dnn-image-encoder \
     && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
