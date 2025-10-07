@@ -14,6 +14,7 @@ COPY dds_setting/10-cyclone-max.conf /etc/sysctl.d/10-cyclone-max.conf
 RUN apt-get update && \
     apt-get install -y \
     tmux \
+    iproute2 \
     terminator \
     vim \
     htop \
@@ -26,11 +27,9 @@ COPY middleware_profiles/cyclonedds.xml /etc/cyclonedds.xml
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 ENV CYCLONEDDS_URI=file:///etc/cyclonedds.xml
 
+# adminユーザーが存在することを保証する
 ARG HOST_USER_UID=1000
 ARG HOST_USER_GID=1000
 RUN groupadd -f -g $HOST_USER_GID admin && \
     useradd -o -u $HOST_USER_UID -g $HOST_USER_GID -m -s /bin/bash admin && \
     echo "admin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/admin-nopasswd
-
-# デフォルトの非rootユーザーに戻す
-USER admin
