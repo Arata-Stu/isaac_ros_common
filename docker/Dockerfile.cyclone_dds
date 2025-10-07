@@ -6,29 +6,9 @@ FROM ${BASE_IMAGE}
 USER root
 
 # 1. Autoware向け通信・マルチキャスト設定
-#    設定ファイルを作成するだけに留める
-RUN \
-    tee /etc/systemd/system/multicast-lo.service > /dev/null <<EOF && \
-[Unit]
-Description=Enable Multicast on Loopback
-[Service]
-Type=oneshot
-ExecStart=/bin/sh -c "/usr/sbin/ip link set lo multicast on"
-RemainAfterExit=true
-[Install]
-WantedBy=multi-user.target
-EOF
-    \
-    tee /etc/sysctl.d/10-cyclone-max.conf > /dev/null <<EOF
-net.core.rmem_max=2147483647
-net.ipv4.ipfrag_time=3
-net.ipv4.ipfrag_high_thresh=134217728
-EOF
-#
-
-# === 以下のコマンドはビルド時には実行できないため削除またはコメントアウト ===
-#    systemctl enable multicast-lo.service && \
-#    sysctl --system
+#    設定ファイルを直接コピーする
+COPY conf/multicast-lo.service /etc/systemd/system/multicast-lo.service
+COPY conf/10-cyclone-max.conf /etc/sysctl.d/10-cyclone-max.conf
 
 # 2. aptパッケージのインストール
 RUN apt-get update && \
