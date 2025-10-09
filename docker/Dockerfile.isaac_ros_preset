@@ -31,4 +31,4 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # デフォルトの作業ディレクトリを設定
-WORKDIR /workspaces/isaac_ros-dev
+WORKDIR /workspaces
