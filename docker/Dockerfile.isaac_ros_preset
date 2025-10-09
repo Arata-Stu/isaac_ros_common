@@ -25,6 +25,7 @@ RUN apt-get update && \
         ros-humble-isaac-ros-nitros-compressed-image-type \
         ros-humble-isaac-ros-tensor-rt \
         ros-humble-isaac-ros-dnn-image-encoder \
+        ros-humble-rtabmap-ros \
     && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
