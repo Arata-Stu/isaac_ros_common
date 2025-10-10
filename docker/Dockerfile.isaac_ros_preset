@@ -17,7 +17,6 @@ RUN apt-get update && \
         ros-humble-isaac-ros-h264-decoder \
         ros-humble-isaac-ros-launch-utils \
         ros-humble-isaac-ros-test \
-        ros-humble-isaac-common \
         ros-humble-isaac-ros-visual-slam-interfaces \
         ros-humble-gxf-isaac-image-flip \
         ros-humble-gxf-isaac-tensorops \
@@ -25,6 +24,7 @@ RUN apt-get update && \
         ros-humble-isaac-ros-nitros-compressed-image-type \
         ros-humble-isaac-ros-tensor-rt \
         ros-humble-isaac-ros-dnn-image-encoder \
+        ros-humble-isaac-ros-visual-slam \
         ros-humble-rtabmap-ros \
     && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
