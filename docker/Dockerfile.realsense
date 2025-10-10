@@ -17,20 +17,20 @@ FROM ${BASE_IMAGE}
 # RealSenseカメラを使用するために必要なカーネルモジュールとSDKをインストール
 
 # 一時ディレクトリでインストール作業を実施し、同じRUNコマンド内でクリーンアップ
-RUN cd /tmp && \
-    # 1. リポジトリをクローン
-    git clone https://github.com/jetsonhacks/jetson-orin-librealsense.git && \
-    cd jetson-orin-librealsense && \
-    # 2. チェックサムを確認
-    sha256sum -c install-modules.tar.gz.sha256 && \
-    # 3. モジュールを展開
-    tar -xzf install-modules.tar.gz && \
-    cd install-modules && \
-    # 4. カーネルモジュールをインストール
-    ./install-realsense-modules.sh && \
-    # クリーンアップ（同じRUNコマンド内で実施することで中間レイヤーに残らない）
-    cd /tmp && \
-    rm -rf jetson-orin-librealsense
+# RUN cd /tmp && \
+#     # 1. リポジトリをクローン
+#     git clone https://github.com/jetsonhacks/jetson-orin-librealsense.git && \
+#     cd jetson-orin-librealsense && \
+#     # 2. チェックサムを確認
+#     sha256sum -c install-modules.tar.gz.sha256 && \
+#     # 3. モジュールを展開
+#     tar -xzf install-modules.tar.gz && \
+#     cd install-modules && \
+#     # 4. カーネルモジュールをインストール
+#     ./install-realsense-modules.sh && \
+#     # クリーンアップ（同じRUNコマンド内で実施することで中間レイヤーに残らない）
+#     cd /tmp && \
+#     rm -rf jetson-orin-librealsense
 
 # 5. Intel RealSense公開キーを登録
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || \
