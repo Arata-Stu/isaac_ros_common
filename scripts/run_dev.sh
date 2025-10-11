@@ -283,7 +283,9 @@ fi
 docker run -it --rm \
     --privileged \
     --network host \
+    --device /dev/gpiochip0 \
     --device /dev/input/js0 \
+    --device /dev/i2c-7 \
     --ipc=host \
     ${DOCKER_ARGS[@]} \
     -v $ISAAC_ROS_DEV_DIR:/workspaces/ \
