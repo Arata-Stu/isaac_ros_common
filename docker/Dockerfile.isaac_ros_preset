@@ -30,5 +30,8 @@ RUN apt-get update && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
 
+COPY scripts/entrypoint_addition[s]/*.sh /usr/local/bin/scripts/entrypoint_additions/
+RUN chmod +x /usr/local/bin/scripts/entrypoint_additions/*.sh || true
+
 # デフォルトの作業ディレクトリを設定
 WORKDIR /workspaces
