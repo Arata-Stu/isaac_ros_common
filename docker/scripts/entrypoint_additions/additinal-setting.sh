@@ -5,7 +5,7 @@
 # NVIDIA CORPORATION and its licensors retain all intellectual property
 # and proprietary rights in and to this software, related documentation
 # and any modifications thereto.  Any use, reproduction, disclosure or
-# distribution of a software and related documentation without an express
+# distribution of this software and related documentation without an express
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 set -e
@@ -33,11 +33,28 @@ print_info "Custom network settings applied."
 export HOME=${USER_HOME}
 chown -R ${HOST_USER_UID}:${HOST_USER_GID} ${USER_HOME}
 
-# --- ここから追加 ---
-# joy_nodeのために、inputグループが存在することを確認し、ユーザーを所属させる
-print_info "Adding user '${USER_NAME}' to 'input' group for joystick access."
-getent group input &>/dev/null || groupadd input
-usermod -aG input ${USER_NAME}
-# --- ここまで追加 ---
+# joy_nodeのために、ジョイスティックデバイスへのアクセス権を設定
+# js0が存在する場合はそのGIDを使用、存在しない場合は101を使用
+if [ -e /dev/input/js0 ]; then
+    HOST_INPUT_GID=$(stat -c '%g' /dev/input/js0)
+    print_info "Detected input device GID: ${HOST_INPUT_GID}"
+else
+    HOST_INPUT_GID=101
+    print_info "No input device found. Using default GID: ${HOST_INPUT_GID}"
+fi
+
+# 該当GIDを持つグループを確認
+EXISTING_GROUP=$(getent group ${HOST_INPUT_GID} | cut -d: -f1)
+
+if [ -n "${EXISTING_GROUP}" ]; then
+    print_info "Adding user '${USER_NAME}' to existing group '${EXISTING_GROUP}' (GID: ${HOST_INPUT_GID})"
+    usermod -aG ${EXISTING_GROUP} ${USER_NAME}
+else
+    # 該当GIDのグループがない場合は新規作成
+    print_info "Creating input group with GID ${HOST_INPUT_GID}"
+    groupadd -g ${HOST_INPUT_GID} input
+    usermod -aG input ${USER_NAME}
+    print_info "Added user '${USER_NAME}' to input group"
+fi
 
 exec gosu ${USER_NAME} "$@"
