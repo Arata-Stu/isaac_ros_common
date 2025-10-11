@@ -7,7 +7,7 @@ USER root
 SHELL ["/bin/bash", "-c"]
 
 # ----------------------------------------------------------------
-# aptで必要なROSパッケージをすべてインストール
+# aptで必要なISAAC ROSパッケージをすべてインストール
 # ----------------------------------------------------------------
 RUN apt-get update && \
     apt-get install -y \
@@ -26,10 +26,41 @@ RUN apt-get update && \
         ros-humble-isaac-ros-dnn-image-encoder \
         ros-humble-isaac-ros-visual-slam \
         ros-humble-rtabmap-ros \
-        bluez \
     && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
+
+
+# ----------------------------------------------------------------
+# aptで必要なパッケージをすべてインストール
+# ---------------------------------------------------------------- 
+RUN apt-get update && \
+    apt-get install -y \
+        bluez \
+        jstest \
+        git \
+    && \
+    # イメージサイズを小さく保つため、aptキャッシュを削除
+    rm -rf /var/lib/apt/lists/*
+
+
+# ----------------------------------------------------------------
+# Jetracerライブラリをソースからインストール 
+# ----------------------------------------------------------------
+RUN set -x && \
+    # 一時的な作業ディレクトリに移動
+    cd /tmp && \
+    # ソースコードをクローン
+    git clone https://github.com/NVIDIA-AI-IOT/jetracer.git && \
+    # クローンしたディレクトリに移動
+    cd jetracer && \
+    # Jetracerライブラリをインストール (root権限のためsudoは不要)
+    python3 setup.py install && \
+    # 依存するpipパッケージをインストール
+    pip3 install traitlets questionary && \
+    # イメージサイズ削減のため、クリーンアップ
+    cd / && rm -rf /tmp/*
+
 
 COPY scripts/entrypoint_addition[s]/*.sh /usr/local/bin/scripts/entrypoint_additions/
 RUN chmod +x /usr/local/bin/scripts/entrypoint_additions/*.sh || true
