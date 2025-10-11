@@ -57,4 +57,29 @@ else
     print_info "Added user '${USER_NAME}' to input group"
 fi
 
+# jetracer_nodeのために、GPIOデバイス(/dev/gpiochip0)へのアクセス権を設定
+if [ -c /dev/gpiochip0 ]; then
+    HOST_GPIO_GID=999 # GIDを999に固定
+    print_info "Using hardcoded GPIO GID: ${HOST_GPIO_GID}"
+
+    # 該当GIDを持つグループがコンテナ内に存在するか確認
+    EXISTING_GPIO_GROUP=$(getent group ${HOST_GPIO_GID} | cut -d: -f1)
+
+    if [ -n "${EXISTING_GPIO_GROUP}" ]; then
+        # 存在する場合、そのグループにユーザーを追加
+        print_info "Adding user '${USER_NAME}' to existing GPIO group '${EXISTING_GPIO_GROUP}'"
+        usermod -aG ${EXISTING_GPIO_GROUP} ${USER_NAME}
+    else
+        # 存在しない場合、'gpio'という名前でグループを新規作成
+        print_info "Creating gpio group with GID ${HOST_GPIO_GID}"
+        groupadd -g ${HOST_GPIO_GID} gpio
+        usermod -aG gpio ${USER_NAME}
+        print_info "Added user '${USER_NAME}' to gpio group"
+    fi
+else
+    # デバイスが見つからない場合は警告を表示
+    print_info "WARNING: GPIO device /dev/gpiochip0 not found. Skipping permission setup."
+fi
+
+
 exec gosu ${USER_NAME} "$@"
