@@ -33,4 +33,11 @@ print_info "Custom network settings applied."
 export HOME=${USER_HOME}
 chown -R ${HOST_USER_UID}:${HOST_USER_GID} ${USER_HOME}
 
+# --- ここから追加 ---
+# joy_nodeのために、inputグループが存在することを確認し、ユーザーを所属させる
+print_info "Adding user '${USER_NAME}' to 'input' group for joystick access."
+getent group input &>/dev/null || groupadd input
+usermod -aG input ${USER_NAME}
+# --- ここまで追加 ---
+
 exec gosu ${USER_NAME} "$@"
