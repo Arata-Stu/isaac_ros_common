@@ -81,5 +81,29 @@ else
     print_info "WARNING: GPIO device /dev/gpiochip0 not found. Skipping permission setup."
 fi
 
+# jetracer_nodeのために、I2Cデバイス(/dev/i2c-7)へのアクセス権を設定
+if [ -c /dev/i2c-7 ]; then
+    HOST_I2C_GID=$(stat -c '%g' /dev/i2c-7)
+    print_info "Detected I2C device GID: ${HOST_I2C_GID}"
+
+    # 該当GIDを持つグループがコンテナ内に存在するか確認
+    EXISTING_I2C_GROUP=$(getent group ${HOST_I2C_GID} | cut -d: -f1)
+
+    if [ -n "${EXISTING_I2C_GROUP}" ]; then
+        # 存在する場合、そのグループにユーザーを追加
+        print_info "Adding user '${USER_NAME}' to existing I2C group '${EXISTING_I2C_GROUP}' (GID: ${HOST_I2C_GID})"
+        usermod -aG ${EXISTING_I2C_GROUP} ${USER_NAME}
+    else
+        # 存在しない場合、'i2c'という名前でグループを新規作成
+        print_info "Creating i2c group with GID ${HOST_I2C_GID}"
+        groupadd -g ${HOST_I2C_GID} i2c
+        usermod -aG i2c ${USER_NAME}
+        print_info "Added user '${USER_NAME}' to i2c group"
+    fi
+else
+    # デバイスが見つからない場合は警告を表示
+    print_info "WARNING: I2C device /dev/i2c-7 not found. Skipping permission setup."
+fi
+
 
 exec gosu ${USER_NAME} "$@"

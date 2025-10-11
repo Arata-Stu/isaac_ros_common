@@ -57,7 +57,7 @@ RUN set -x && \
     # Jetracerライブラリをインストール (root権限のためsudoは不要)
     python3 setup.py install && \
     # 依存するpipパッケージをインストール
-    pip3 install traitlets questionary && \
+    pip3 install traitlets questionary jetson-gpio  && \
     # イメージサイズ削減のため、クリーンアップ
     cd / && rm -rf /tmp/*
 
