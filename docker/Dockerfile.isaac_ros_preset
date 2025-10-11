@@ -26,12 +26,15 @@ RUN apt-get update && \
         ros-humble-isaac-ros-dnn-image-encoder \
         ros-humble-isaac-ros-visual-slam \
         ros-humble-rtabmap-ros \
+        bluez \
     && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
 
 COPY scripts/entrypoint_addition[s]/*.sh /usr/local/bin/scripts/entrypoint_additions/
 RUN chmod +x /usr/local/bin/scripts/entrypoint_additions/*.sh || true
+
+COPY scripts/my_additions/*.sh /my_scripts/
 
 # デフォルトの作業ディレクトリを設定
 WORKDIR /workspaces
