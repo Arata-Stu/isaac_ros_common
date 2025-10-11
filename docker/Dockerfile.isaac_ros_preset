@@ -37,10 +37,10 @@ RUN apt-get update && \
 RUN apt-get update && \
     apt-get install -y \
         bluez \
-        jstest \
+        joystick \
         git \
     && \
-    # イメージサイズを小さく保つため、aptキャッシュを削除
+    # イメージサイズを小さく保ため、aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
 
 
