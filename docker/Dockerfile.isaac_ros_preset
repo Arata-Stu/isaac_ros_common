@@ -25,6 +25,8 @@ RUN apt-get update && \
         ros-humble-isaac-ros-tensor-rt \
         ros-humble-isaac-ros-dnn-image-encoder \
         ros-humble-isaac-ros-visual-slam \
+        ros-humble-rqt-robot-monitor \
+        ros-humble-isaac-ros-jetson-stats \
         ros-humble-rtabmap-ros \
     && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
