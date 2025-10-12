@@ -105,5 +105,8 @@ else
     print_info "WARNING: I2C device /dev/i2c-7 not found. Skipping permission setup."
 fi
 
+export ROS_DOMAIN_ID="${ROS_DOMAIN_ID:=0}"
+print_info "Using ROS_DOMAIN_ID=${ROS_DOMAIN_ID}"
+
 
 exec gosu ${USER_NAME} "$@"
