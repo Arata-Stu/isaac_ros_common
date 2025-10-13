@@ -21,7 +21,8 @@ COPY middleware_profiles/cyclonedds.xml /etc/cyclonedds.xml
 # 環境変数を設定
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 ENV CYCLONEDDS_URI=file:///etc/cyclonedds.xml
-ENV ROS_DOMAIN_ID=33
+ENV ROS_LOCALHOST_ONLY=1
+ENV ROS_DOMAIN_ID=184
 
 # adminユーザーが存在することを保証する
 ARG HOST_USER_UID=1000

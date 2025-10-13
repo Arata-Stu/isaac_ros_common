@@ -25,9 +25,13 @@ RUN apt-get update && \
         ros-humble-isaac-ros-nitros-compressed-image-type \
         ros-humble-isaac-ros-tensor-rt \
         ros-humble-isaac-ros-dnn-image-encoder \
+        ros-humble-rtabmap-ros \
+        ros-humble-isaac-mapping-ros \
+        ros-humble-isaac-ros-visual-global-localization \
+        ros-humble-topic-tools \
     && \
     # イメージサイズを小さく保つため、aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
 
 # デフォルトの作業ディレクトリを設定
-WORKDIR /workspaces/isaac_ros-dev
+WORKDIR /workspaces
