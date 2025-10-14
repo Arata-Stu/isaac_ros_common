@@ -290,6 +290,7 @@ docker run -it --rm \
     ${DOCKER_ARGS[@]} \
     -v $ISAAC_ROS_DEV_DIR:/workspaces/ \
     -v /etc/localtime:/etc/localtime:ro \
+    -v /var/run/dbus:/var/run/dbus \
     --name "$CONTAINER_NAME" \
     --runtime nvidia \
     --entrypoint /usr/local/bin/scripts/workspace-entrypoint.sh \
