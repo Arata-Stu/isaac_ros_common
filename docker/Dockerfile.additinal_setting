@@ -77,8 +77,6 @@ RUN set -x && \
 COPY scripts/entrypoint_additions/*.sh /usr/local/bin/scripts/entrypoint_additions/
 RUN chmod +x /usr/local/bin/scripts/entrypoint_additions/*.sh || true
 
-COPY scripts/my_additions/*.sh /my_scripts/
-
 # ============================================================
 # 6. admin ユーザーの設定
 # ============================================================
