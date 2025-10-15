@@ -43,6 +43,7 @@ fi
 
 ISAAC_ROS_DEV_DIR="${ISAAC_ROS_WS}"
 SCRIPTS_DIR=$(realpath "${ISAAC_ROS_WS}/../scripts")
+PYTHON_WS=$(realpath "${ISAAC_ROS_WS}/../python_ws")
 SKIP_IMAGE_BUILD=0
 VERBOSE=0
 VALID_ARGS=$(getopt -o hvd:i:ba: --long help,verbose,isaac_ros_dev_dir:,image_key:,skip_image_build,docker_arg: -- "$@")
@@ -293,6 +294,7 @@ docker run -it --rm \
     -v /etc/localtime:/etc/localtime:ro \
     -v /var/run/dbus:/var/run/dbus \
     -v "$SCRIPTS_DIR:/scripts" \
+    -v "$PYTHON_WS:/python_ws" \
     --name "$CONTAINER_NAME" \
     --runtime nvidia \
     --entrypoint /usr/local/bin/scripts/workspace-entrypoint.sh \
