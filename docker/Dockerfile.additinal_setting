@@ -53,6 +53,7 @@ RUN apt-get update && \
         ros-humble-isaac-ros-nitros-compressed-image-type \
         ros-humble-isaac-ros-tensor-rt \
         ros-humble-isaac-ros-dnn-image-encoder \
+        ros-humble-isaac-ros-triton \
         ros-humble-isaac-ros-visual-slam \
         ros-humble-rqt-robot-monitor \
         ros-humble-isaac-ros-jetson-stats \
