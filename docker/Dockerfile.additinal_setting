@@ -1,71 +1,68 @@
-# ISAAC ROSの基本イメージをベースにする
+# ============================================================
+# ベース: ISAAC ROS 基本イメージ
+# ============================================================
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
-# root権限で全てのセットアップを実行
+# ============================================================
+# root 権限に切り替え
+# ============================================================
 USER root
 SHELL ["/bin/bash", "-c"]
 
-# ----------------------------------------------------------------
-# 環境変数の設定
-# ----------------------------------------------------------------
-# CycloneDDSの設定
+# ============================================================
+# 1. 必須ツールのインストール
+# ============================================================
+RUN apt-get update && \
+    apt-get install -y \
+        tmux \
+        iproute2 \
+        terminator \
+        vim \
+        htop \
+        can-utils \
+        bluez \
+        joystick \
+        git \
+    && \
+    rm -rf /var/lib/apt/lists/*
+
+# ============================================================
+# 2. CycloneDDS 設定
+# ============================================================
+COPY middleware_profiles/cyclonedds.xml /etc/cyclonedds.xml
 ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 ENV CYCLONEDDS_URI=file:///etc/cyclonedds.xml
+ENV ROS_DOMAIN_ID=33
 
-# ----------------------------------------------------------------
-# ISAAC ROS 関連パッケージをインストール
-# ----------------------------------------------------------------
+# ============================================================
+# 3. ISAAC ROS 関連パッケージのインストール
+# ============================================================
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    ros-humble-ackermann-msgs \
-    ros-humble-isaac-ros-examples \
-    ros-humble-isaac-ros-realsense \
-    ros-humble-isaac-ros-h264-decoder \
-    ros-humble-isaac-ros-launch-utils \
-    ros-humble-isaac-ros-test \
-    ros-humble-isaac-ros-visual-slam-interfaces \
-    ros-humble-gxf-isaac-image-flip \
-    ros-humble-gxf-isaac-tensorops \
-    ros-humble-isaac-ros-image-proc \
-    ros-humble-isaac-ros-nitros-compressed-image-type \
-    ros-humble-isaac-ros-tensor-rt \
-    ros-humble-isaac-ros-dnn-image-encoder \
-    ros-humble-isaac-ros-visual-slam \
-    ros-humble-rqt-robot-monitor \
-    ros-humble-isaac-ros-jetson-stats \
-    ros-humble-rtabmap-ros \
+    apt-get install -y \
+        ros-humble-ackermann-msgs \
+        ros-humble-isaac-ros-examples \
+        ros-humble-isaac-ros-realsense \
+        ros-humble-isaac-ros-h264-decoder \
+        ros-humble-isaac-ros-launch-utils \
+        ros-humble-isaac-ros-test \
+        ros-humble-isaac-ros-visual-slam-interfaces \
+        ros-humble-gxf-isaac-image-flip \
+        ros-humble-gxf-isaac-tensorops \
+        ros-humble-isaac-ros-image-proc \
+        ros-humble-isaac-ros-nitros-compressed-image-type \
+        ros-humble-isaac-ros-tensor-rt \
+        ros-humble-isaac-ros-dnn-image-encoder \
+        ros-humble-isaac-ros-visual-slam \
+        ros-humble-rqt-robot-monitor \
+        ros-humble-isaac-ros-jetson-stats \
+        ros-humble-rtabmap-ros \
     && \
-    # aptキャッシュを削除
     rm -rf /var/lib/apt/lists/*
 
-# ----------------------------------------------------------------
-# 基本ツールとライブラリをインストール
-# ----------------------------------------------------------------
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    # 基本ツール
-    tmux \
-    iproute2 \
-    terminator \
-    vim \
-    htop \
-    can-utils \
-    # その他ツール
-    bluez \
-    joystick \
-    git \
-    git-lfs \
-    && \
-    # aptキャッシュを削除
-    rm -rf /var/lib/apt/lists/*
-
-# Git LFSの初期設定
-RUN git lfs install --skip-repo
-
-# ----------------------------------------------------------------
-# Jetracerライブラリをソースからインストール
-# ----------------------------------------------------------------
+# ============================================================
+# 4. Jetracer ライブラリのインストール
+# ============================================================
 RUN set -x && \
     cd /tmp && \
     git clone https://github.com/NVIDIA-AI-IOT/jetracer.git && \
@@ -74,25 +71,24 @@ RUN set -x && \
     pip3 install traitlets questionary jetson-gpio && \
     cd / && rm -rf /tmp/*
 
-# CycloneDDSの設定ファイルをコピー
-COPY middleware_profiles/cyclonedds.xml /etc/cyclonedds.xml
+# ============================================================
+# 5. スクリプト類を配置
+# ============================================================
+COPY scripts/entrypoint_additions/*.sh /usr/local/bin/scripts/entrypoint_additions/
+RUN chmod +x /usr/local/bin/scripts/entrypoint_additions/*.sh || true
 
-# ホストOSのユーザーID/グループIDに合わせてコンテナ内にadminユーザーを作成
+COPY scripts/my_additions/*.sh /my_scripts/
+
+# ============================================================
+# 6. admin ユーザーの設定
+# ============================================================
 ARG HOST_USER_UID=1000
 ARG HOST_USER_GID=1000
 RUN groupadd -f -g $HOST_USER_GID admin && \
     useradd -o -u $HOST_USER_UID -g $HOST_USER_GID -m -s /bin/bash admin && \
-    # パスワードなしでsudoコマンドを実行できるように設定
     echo "admin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/admin-nopasswd
 
-# カスタムスクリプトをコピーして実行権限を付与
-COPY scripts/entrypoint_addition[s]/*.sh /usr/local/bin/scripts/entrypoint_additions/
-RUN chmod +x /usr/local/bin/scripts/entrypoint_additions/*.sh || true
-COPY scripts/my_additions/*.sh /my_scripts/
-RUN chmod +x /my_scripts/*.sh || true
-
-# デフォルトの作業ディレクトリを設定
+# ============================================================
+# 7. 作業ディレクトリ設定
+# ============================================================
 WORKDIR /workspaces
-
-# デフォルトのユーザーをadminに切り替え
-USER admin
