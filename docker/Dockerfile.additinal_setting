@@ -58,6 +58,7 @@ RUN apt-get update && \
         ros-humble-rqt-robot-monitor \
         ros-humble-isaac-ros-jetson-stats \
         ros-humble-rtabmap-ros \
+        ros-humble-isaac-mapping-ros \
     && \
     rm -rf /var/lib/apt/lists/*
 
