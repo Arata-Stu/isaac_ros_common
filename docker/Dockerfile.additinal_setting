@@ -72,14 +72,20 @@ RUN set -x && \
     pip3 install traitlets questionary jetson-gpio && \
     cd / && rm -rf /tmp/*
 
+
 # ============================================================
-# 5. スクリプト類を配置
+# 5. PyTorch と torchvision のインストール
+# ============================================================
+RUN pip install torch==2.8.0 torchvision==0.23.0
+
+# ============================================================
+# 6. スクリプト類を配置
 # ============================================================
 COPY scripts/entrypoint_additions/*.sh /usr/local/bin/scripts/entrypoint_additions/
 RUN chmod +x /usr/local/bin/scripts/entrypoint_additions/*.sh || true
 
 # ============================================================
-# 6. admin ユーザーの設定
+# 7. admin ユーザーの設定
 # ============================================================
 ARG HOST_USER_UID=1000
 ARG HOST_USER_GID=1000
@@ -88,6 +94,6 @@ RUN groupadd -f -g $HOST_USER_GID admin && \
     echo "admin ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/admin-nopasswd
 
 # ============================================================
-# 7. 作業ディレクトリ設定
+# 8. 作業ディレクトリ設定
 # ============================================================
 WORKDIR /workspaces
