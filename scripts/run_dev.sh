@@ -43,6 +43,7 @@ fi
 
 ISAAC_ROS_DEV_DIR="${ISAAC_ROS_WS}"
 SCRIPTS_DIR=$(realpath "${ISAAC_ROS_WS}/../scripts")
+DEBUG_DIR=$(realpath "${ISAAC_ROS_WS}/../debug")
 PYTHON_WS=$(realpath "${ISAAC_ROS_WS}/../python_ws")
 SKIP_IMAGE_BUILD=0
 VERBOSE=0
@@ -294,6 +295,7 @@ docker run -it --rm \
     -v /etc/localtime:/etc/localtime:ro \
     -v /var/run/dbus:/var/run/dbus \
     -v "$SCRIPTS_DIR:/scripts" \
+    -v "$DEBUG_DIR:/debug" \
     -v "$PYTHON_WS:/python_ws" \
     --name "$CONTAINER_NAME" \
     --runtime nvidia \
