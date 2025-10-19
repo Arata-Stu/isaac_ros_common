@@ -59,6 +59,7 @@ RUN apt-get update && \
         ros-humble-isaac-ros-jetson-stats \
         ros-humble-rtabmap-ros \
         ros-humble-isaac-mapping-ros \
+        ros-humble-isaac-ros-apriltag-interfaces \
     && \
     rm -rf /var/lib/apt/lists/*
 
