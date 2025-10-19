@@ -252,9 +252,9 @@ if [[ $PLATFORM == "aarch64" ]]; then
   DOCKER_ARGS+=("-v /usr/src/jetson_multimedia_api:/usr/src/jetson_multimedia_api")
   DOCKER_ARGS+=("--pid=host")
   DOCKER_ARGS+=("-v /usr/share/vpi3:/usr/share/vpi3")
-
+  ## このようにマウントすることで、docker内でもbluetoothを接続できる
+  DOCKER_ARGS+=("-v /dev/input:/dev/input")
   # デバイスが存在する場合のみマウント
-  [[ -e /dev/input ]] && DOCKER_ARGS+=("--device /dev/input")
   [[ -e /dev/gpiochip0 ]] && DOCKER_ARGS+=("--device /dev/gpiochip0")
   [[ -e /dev/i2c-7 ]] && DOCKER_ARGS+=("--device /dev/i2c-7")
 
