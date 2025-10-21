@@ -24,6 +24,7 @@ RUN apt-get update && \
         bluez \
         joystick \
         git \
+        sshpass \
     && \
     rm -rf /var/lib/apt/lists/*
 
